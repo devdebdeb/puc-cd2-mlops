@@ -25,10 +25,12 @@ router = APIRouter()
 # ---------------------------------------------------------------------------
 # Constantes — ajuste REPO_ID após publicar o modelo
 # ---------------------------------------------------------------------------
-REPO_ID = os.environ.get("HF_REPO_ID")
-if not REPO_ID:
-    # Em produção, a API deve falhar se a configuração crítica estiver ausente
-    raise RuntimeError("Variável de ambiente HF_REPO_ID não configurada.")
+def get_repo_id():
+    repo_id = os.environ.get("HF_REPO_ID")
+    if not repo_id:
+        raise RuntimeError("Variável de ambiente HF_REPO_ID não configurada.")
+    return repo_id
+
 MODEL_VERSION = "1.0.0"
 
 # Cache em memória para evitar download a cada predição
@@ -39,7 +41,7 @@ def get_model():
     """Carrega o modelo uma vez e cacheia em memória."""
     global _model_cache
     if _model_cache is None:
-        _model_cache = load_model(REPO_ID)
+        _model_cache = load_model(get_repo_id())
     return _model_cache
 
 
