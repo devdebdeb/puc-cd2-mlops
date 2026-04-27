@@ -121,7 +121,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Rodar testes smoke
-        run: pytest tests/ -m smoke -v --tb=short
+        run: python -m pytest tests/ -m smoke -v --tb=short
         # -m smoke: executa apenas testes marcados com @pytest.mark.smoke
         # -v: verbose — mostra nome de cada teste
         # --tb=short: traceback resumido nos logs do pipeline
@@ -167,7 +167,7 @@ jobs:
         # não o artefato .pkl no Hub.
 
       - name: Rodar testes de integração
-        run: pytest tests/ -m integracao -v --tb=short
+        run: python -m pytest tests/ -m integracao -v --tb=short
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           # O secret HF_TOKEN é configurado em:
