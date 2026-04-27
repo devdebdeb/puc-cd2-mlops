@@ -22,6 +22,7 @@ from model_utils import load_model
 
 router = APIRouter()
 
+
 # ---------------------------------------------------------------------------
 # Constantes — ajuste REPO_ID após publicar o modelo
 # ---------------------------------------------------------------------------
@@ -30,6 +31,7 @@ def get_repo_id():
     if not repo_id:
         raise RuntimeError("Variável de ambiente HF_REPO_ID não configurada.")
     return repo_id
+
 
 MODEL_VERSION = "1.0.0"
 
