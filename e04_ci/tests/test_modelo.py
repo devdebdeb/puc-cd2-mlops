@@ -35,7 +35,10 @@ from main import app
 # ---------------------------------------------------------------------------
 REPO_ID = os.environ.get("HF_REPO_ID")
 if not REPO_ID:
-    pytest.skip("HF_REPO_ID não configurada. Pulando testes de integração.")
+    pytest.skip(
+        "HF_REPO_ID não configurada. Pulando testes de integração.",
+        allow_module_level=True,
+    )
 N_FEATURES = 5
 
 PAYLOAD_VALIDO = {
