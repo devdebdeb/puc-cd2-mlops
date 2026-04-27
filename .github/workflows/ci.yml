@@ -20,6 +20,10 @@
 
 name: CI — Bella Tavola
 
+defaults:
+  run:
+    working-directory: e04_ci
+
 on:
   push:
     branches: [main, develop]
