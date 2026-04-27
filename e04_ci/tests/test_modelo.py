@@ -33,7 +33,7 @@ from main import app
 # ---------------------------------------------------------------------------
 # Constantes — ajuste para o seu repositório
 # ---------------------------------------------------------------------------
-REPO_ID = os.environ.get("HF_REPO_ID", "SEU_USUARIO/mlops-bella-tavola-v1")
+REPO_ID = os.environ.get("HF_REPO_ID") or "andremessina/mlops-fraud-v2"
 N_FEATURES = 5
 
 PAYLOAD_VALIDO = {
