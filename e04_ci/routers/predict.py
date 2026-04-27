@@ -25,7 +25,10 @@ router = APIRouter()
 # ---------------------------------------------------------------------------
 # Constantes — ajuste REPO_ID após publicar o modelo
 # ---------------------------------------------------------------------------
-REPO_ID = os.environ.get("HF_REPO_ID", "andremessina/mlops-fraud-v2")
+REPO_ID = os.environ.get("HF_REPO_ID")
+if not REPO_ID:
+    # Em produção, a API deve falhar se a configuração crítica estiver ausente
+    raise RuntimeError("Variável de ambiente HF_REPO_ID não configurada.")
 MODEL_VERSION = "1.0.0"
 
 # Cache em memória para evitar download a cada predição
