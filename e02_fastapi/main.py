@@ -51,20 +51,108 @@ async def root():
 
 # Exercício 1.5: campo 'disponivel' adicionado conforme gabarito
 pratos = [
-    {"id": 1, "nome": "Margherita",      "categoria": "pizza",     "preco": 45.0,  "disponivel": True,  "descricao": None, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 2, "nome": "Carbonara",       "categoria": "massa",     "preco": 52.0,  "disponivel": True,  "descricao": None, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 3, "nome": "Lasanha Bolonhesa","categoria": "massa",    "preco": 58.0,  "disponivel": False, "descricao": None, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 4, "nome": "Tiramisù",        "categoria": "sobremesa", "preco": 28.0,  "disponivel": True,  "descricao": None, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 5, "nome": "Quattro Stagioni","categoria": "pizza",     "preco": 49.0,  "disponivel": True,  "descricao": None, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 6, "nome": "Panna Cotta",     "categoria": "sobremesa", "preco": 24.0,  "disponivel": True,  "descricao": None, "criado_em": "2024-01-01T00:00:00"},
+    {
+        "id": 1,
+        "nome": "Margherita",
+        "categoria": "pizza",
+        "preco": 45.0,
+        "disponivel": True,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 2,
+        "nome": "Carbonara",
+        "categoria": "massa",
+        "preco": 52.0,
+        "disponivel": True,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 3,
+        "nome": "Lasanha Bolonhesa",
+        "categoria": "massa",
+        "preco": 58.0,
+        "disponivel": False,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 4,
+        "nome": "Tiramisù",
+        "categoria": "sobremesa",
+        "preco": 28.0,
+        "disponivel": True,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 5,
+        "nome": "Quattro Stagioni",
+        "categoria": "pizza",
+        "preco": 49.0,
+        "disponivel": True,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 6,
+        "nome": "Panna Cotta",
+        "categoria": "sobremesa",
+        "preco": 24.0,
+        "disponivel": True,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
 ]
 
 bebidas = [
-    {"id": 1, "nome": "Água Mineral",    "tipo": "agua",        "preco": 8.0,   "alcoolica": False, "volume_ml": 500, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 2, "nome": "Chianti Classico","tipo": "vinho",       "preco": 120.0, "alcoolica": True,  "volume_ml": 750, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 3, "nome": "San Pellegrino",  "tipo": "agua",        "preco": 15.0,  "alcoolica": False, "volume_ml": 750, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 4, "nome": "Suco de Laranja", "tipo": "suco",        "preco": 18.0,  "alcoolica": False, "volume_ml": 300, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 5, "nome": "Prosecco",        "tipo": "vinho",       "preco": 95.0,  "alcoolica": True,  "volume_ml": 750, "criado_em": "2024-01-01T00:00:00"},
+    {
+        "id": 1,
+        "nome": "Água Mineral",
+        "tipo": "agua",
+        "preco": 8.0,
+        "alcoolica": False,
+        "volume_ml": 500,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 2,
+        "nome": "Chianti Classico",
+        "tipo": "vinho",
+        "preco": 120.0,
+        "alcoolica": True,
+        "volume_ml": 750,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 3,
+        "nome": "San Pellegrino",
+        "tipo": "agua",
+        "preco": 15.0,
+        "alcoolica": False,
+        "volume_ml": 750,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 4,
+        "nome": "Suco de Laranja",
+        "tipo": "suco",
+        "preco": 18.0,
+        "alcoolica": False,
+        "volume_ml": 300,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 5,
+        "nome": "Prosecco",
+        "tipo": "vinho",
+        "preco": 95.0,
+        "alcoolica": True,
+        "volume_ml": 750,
+        "criado_em": "2024-01-01T00:00:00",
+    },
 ]
 
 pedidos = []
@@ -73,6 +161,7 @@ pedidos = []
 # ---------------------------------------------------------------------------
 # Modelos Pydantic — Bloco 2 (ex 2.3): Field com constraints
 # ---------------------------------------------------------------------------
+
 
 class PratoInput(BaseModel):
     """Modelo de entrada para criação de prato.
@@ -84,6 +173,7 @@ class PratoInput(BaseModel):
     - Optional com default
     - bool com default
     """
+
     nome: str = Field(min_length=3, max_length=100, description="Nome do prato")
     categoria: str = Field(
         pattern=r"^(pizza|massa|sobremesa|entrada|salada)$",
@@ -104,6 +194,7 @@ class PratoInput(BaseModel):
 
 class PratoOutput(BaseModel):
     """Modelo de saída — inclui id e criado_em gerados pelo servidor."""
+
     id: int
     nome: str
     categoria: str
@@ -133,6 +224,7 @@ class BebidaOutput(BaseModel):
 
 class PedidoInput(BaseModel):
     """Bloco 3: pedido vinculado a um prato existente e disponível."""
+
     prato_id: int
     quantidade: int = Field(ge=1, description="Quantidade mínima de 1")
     observacao: Optional[str] = Field(default=None, max_length=300)
@@ -156,6 +248,7 @@ class DisponibilidadeInput(BaseModel):
 # ---------------------------------------------------------------------------
 # BLOCO 1 — Exercícios 1.2 a 1.7: Rotas de Pratos
 # ---------------------------------------------------------------------------
+
 
 @app.get("/pratos")
 async def listar_pratos(
@@ -227,12 +320,15 @@ async def atualizar_disponibilidade(prato_id: int, body: DisponibilidadeInput):
         if prato["id"] == prato_id:
             prato["disponivel"] = body.disponivel
             return prato
-    raise HTTPException(status_code=404, detail=f"Prato com id {prato_id} não encontrado")
+    raise HTTPException(
+        status_code=404, detail=f"Prato com id {prato_id} não encontrado"
+    )
 
 
 # ---------------------------------------------------------------------------
 # BLOCO 1 — Exercício 1.8: Rotas de Bebidas (desafio autônomo)
 # ---------------------------------------------------------------------------
+
 
 @app.get("/bebidas")
 async def listar_bebidas(
@@ -273,6 +369,7 @@ async def criar_bebida(bebida: BebidaInput):
 # ---------------------------------------------------------------------------
 # BLOCO 3 — Pedidos com regra de negócio
 # ---------------------------------------------------------------------------
+
 
 @app.post("/pedidos", response_model=PedidoOutput, status_code=201)
 async def criar_pedido(pedido: PedidoInput):

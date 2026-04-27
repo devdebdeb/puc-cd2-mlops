@@ -4,6 +4,7 @@ import joblib as jl
 import numpy as np
 from huggingface_hub import HfApi, login
 
+
 def publicar():
     # Tenta pegar o token do ambiente
     token = os.environ.get("HF_TOKEN")
@@ -17,13 +18,15 @@ def publicar():
         api = HfApi()
         username = api.whoami()["name"]
         repo_id = f"{username}/mlops-fraud-v2"
-        
+
         print(f"🚀 Verificando repositório: {repo_id}...")
         api.create_repo(repo_id=repo_id, repo_type="model", exist_ok=True)
 
         # Gerar requirements para o Hub
         with open("requirements_hub.txt", "w") as f:
-            f.write(f"scikit-learn=={sklearn.__version__}\njoblib=={jl.__version__}\nnumpy=={np.__version__}\n")
+            f.write(
+                f"scikit-learn=={sklearn.__version__}\njoblib=={jl.__version__}\nnumpy=={np.__version__}\n"
+            )
 
         # Gerar README para o Hub
         model_card = f"""---
@@ -41,13 +44,23 @@ Modelo de detecção de fraude (PUC CD2 2026).
             f.write(model_card)
 
         # Upload
-        for local, remoto in {"model.pkl": "model.pkl", "README_hub.md": "README.md", "requirements_hub.txt": "requirements.txt"}.items():
+        for local, remoto in {
+            "model.pkl": "model.pkl",
+            "README_hub.md": "README.md",
+            "requirements_hub.txt": "requirements.txt",
+        }.items():
             print(f"⬆️ Enviando {local}...")
-            api.upload_file(path_or_fileobj=local, path_in_repo=remoto, repo_id=repo_id, repo_type="model")
+            api.upload_file(
+                path_or_fileobj=local,
+                path_in_repo=remoto,
+                repo_id=repo_id,
+                repo_type="model",
+            )
 
         print(f"\n✅ SUCESSO! Modelo em: https://huggingface.co/{repo_id}")
     except Exception as e:
         print(f"❌ ERRO durante a publicação: {e}")
+
 
 if __name__ == "__main__":
     publicar()

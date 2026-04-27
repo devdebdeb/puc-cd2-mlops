@@ -30,20 +30,108 @@ app.include_router(predict_router, prefix="/ml", tags=["ML"])
 # Dados em memória
 # ---------------------------------------------------------------------------
 pratos = [
-    {"id": 1, "nome": "Margherita",       "categoria": "pizza",     "preco": 45.0,  "disponivel": True,  "descricao": None, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 2, "nome": "Carbonara",        "categoria": "massa",     "preco": 52.0,  "disponivel": True,  "descricao": None, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 3, "nome": "Lasanha Bolonhesa","categoria": "massa",     "preco": 58.0,  "disponivel": False, "descricao": None, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 4, "nome": "Tiramisù",         "categoria": "sobremesa", "preco": 28.0,  "disponivel": True,  "descricao": None, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 5, "nome": "Quattro Stagioni", "categoria": "pizza",     "preco": 49.0,  "disponivel": True,  "descricao": None, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 6, "nome": "Panna Cotta",      "categoria": "sobremesa", "preco": 24.0,  "disponivel": True,  "descricao": None, "criado_em": "2024-01-01T00:00:00"},
+    {
+        "id": 1,
+        "nome": "Margherita",
+        "categoria": "pizza",
+        "preco": 45.0,
+        "disponivel": True,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 2,
+        "nome": "Carbonara",
+        "categoria": "massa",
+        "preco": 52.0,
+        "disponivel": True,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 3,
+        "nome": "Lasanha Bolonhesa",
+        "categoria": "massa",
+        "preco": 58.0,
+        "disponivel": False,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 4,
+        "nome": "Tiramisù",
+        "categoria": "sobremesa",
+        "preco": 28.0,
+        "disponivel": True,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 5,
+        "nome": "Quattro Stagioni",
+        "categoria": "pizza",
+        "preco": 49.0,
+        "disponivel": True,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 6,
+        "nome": "Panna Cotta",
+        "categoria": "sobremesa",
+        "preco": 24.0,
+        "disponivel": True,
+        "descricao": None,
+        "criado_em": "2024-01-01T00:00:00",
+    },
 ]
 
 bebidas = [
-    {"id": 1, "nome": "Água Mineral",     "tipo": "agua",  "preco": 8.0,   "alcoolica": False, "volume_ml": 500, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 2, "nome": "Chianti Classico", "tipo": "vinho", "preco": 120.0, "alcoolica": True,  "volume_ml": 750, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 3, "nome": "San Pellegrino",   "tipo": "agua",  "preco": 15.0,  "alcoolica": False, "volume_ml": 750, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 4, "nome": "Suco de Laranja",  "tipo": "suco",  "preco": 18.0,  "alcoolica": False, "volume_ml": 300, "criado_em": "2024-01-01T00:00:00"},
-    {"id": 5, "nome": "Prosecco",         "tipo": "vinho", "preco": 95.0,  "alcoolica": True,  "volume_ml": 750, "criado_em": "2024-01-01T00:00:00"},
+    {
+        "id": 1,
+        "nome": "Água Mineral",
+        "tipo": "agua",
+        "preco": 8.0,
+        "alcoolica": False,
+        "volume_ml": 500,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 2,
+        "nome": "Chianti Classico",
+        "tipo": "vinho",
+        "preco": 120.0,
+        "alcoolica": True,
+        "volume_ml": 750,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 3,
+        "nome": "San Pellegrino",
+        "tipo": "agua",
+        "preco": 15.0,
+        "alcoolica": False,
+        "volume_ml": 750,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 4,
+        "nome": "Suco de Laranja",
+        "tipo": "suco",
+        "preco": 18.0,
+        "alcoolica": False,
+        "volume_ml": 300,
+        "criado_em": "2024-01-01T00:00:00",
+    },
+    {
+        "id": 5,
+        "nome": "Prosecco",
+        "tipo": "vinho",
+        "preco": 95.0,
+        "alcoolica": True,
+        "volume_ml": 750,
+        "criado_em": "2024-01-01T00:00:00",
+    },
 ]
 
 pedidos = []
@@ -153,13 +241,19 @@ async def buscar_prato(prato_id: int, formato: str = "completo"):
             if formato == "resumido":
                 return {"nome": prato["nome"], "preco": prato["preco"]}
             return prato
-    raise HTTPException(status_code=404, detail=f"Prato com id {prato_id} não encontrado")
+    raise HTTPException(
+        status_code=404, detail=f"Prato com id {prato_id} não encontrado"
+    )
 
 
 @app.post("/pratos", response_model=PratoOutput, status_code=201)
 async def criar_prato(prato: PratoInput):
     novo_id = max(p["id"] for p in pratos) + 1 if pratos else 1
-    novo_prato = {"id": novo_id, "criado_em": datetime.now().isoformat(), **prato.model_dump()}
+    novo_prato = {
+        "id": novo_id,
+        "criado_em": datetime.now().isoformat(),
+        **prato.model_dump(),
+    }
     pratos.append(novo_prato)
     return novo_prato
 
@@ -170,7 +264,9 @@ async def atualizar_disponibilidade(prato_id: int, body: DisponibilidadeInput):
         if prato["id"] == prato_id:
             prato["disponivel"] = body.disponivel
             return prato
-    raise HTTPException(status_code=404, detail=f"Prato com id {prato_id} não encontrado")
+    raise HTTPException(
+        status_code=404, detail=f"Prato com id {prato_id} não encontrado"
+    )
 
 
 @app.get("/bebidas")
@@ -188,13 +284,19 @@ async def buscar_bebida(bebida_id: int):
     for bebida in bebidas:
         if bebida["id"] == bebida_id:
             return bebida
-    raise HTTPException(status_code=404, detail=f"Bebida com id {bebida_id} não encontrada")
+    raise HTTPException(
+        status_code=404, detail=f"Bebida com id {bebida_id} não encontrada"
+    )
 
 
 @app.post("/bebidas", response_model=BebidaOutput, status_code=201)
 async def criar_bebida(bebida: BebidaInput):
     novo_id = max(b["id"] for b in bebidas) + 1 if bebidas else 1
-    nova_bebida = {"id": novo_id, "criado_em": datetime.now().isoformat(), **bebida.model_dump()}
+    nova_bebida = {
+        "id": novo_id,
+        "criado_em": datetime.now().isoformat(),
+        **bebida.model_dump(),
+    }
     bebidas.append(nova_bebida)
     return nova_bebida
 
@@ -203,9 +305,13 @@ async def criar_bebida(bebida: BebidaInput):
 async def criar_pedido(pedido: PedidoInput):
     prato = next((p for p in pratos if p["id"] == pedido.prato_id), None)
     if prato is None:
-        raise HTTPException(status_code=404, detail=f"Prato com id {pedido.prato_id} não encontrado")
+        raise HTTPException(
+            status_code=404, detail=f"Prato com id {pedido.prato_id} não encontrado"
+        )
     if not prato["disponivel"]:
-        raise HTTPException(status_code=400, detail=f"O prato '{prato['nome']}' não está disponível")
+        raise HTTPException(
+            status_code=400, detail=f"O prato '{prato['nome']}' não está disponível"
+        )
     novo_id = max(p["id"] for p in pedidos) + 1 if pedidos else 1
     novo_pedido = {
         "id": novo_id,

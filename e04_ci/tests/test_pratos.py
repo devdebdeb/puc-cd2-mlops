@@ -16,10 +16,10 @@ Conceitos aplicados:
 
 import pytest
 
-
 # ===========================================================================
 # Bloco 3, Exercício 3.3 — Primeiro teste real da API
 # ===========================================================================
+
 
 @pytest.mark.smoke
 def test_raiz_retorna_nome_restaurante(client):
@@ -78,6 +78,7 @@ def test_buscar_prato_inexistente_retorna_404(client):
 # Bloco 3, Exercício 3.4 — Testando criação e validação
 # ===========================================================================
 
+
 @pytest.mark.smoke
 def test_criar_prato_valido(client, prato_valido):
     response = client.post("/pratos", json=prato_valido)
@@ -128,11 +129,14 @@ def test_prato_criado_aparece_na_listagem(client):
     Usa nome único para não depender de contagem absoluta.
     """
     nome_unico = "Tagliatelle Teste XYZ-9871"
-    client.post("/pratos", json={
-        "nome": nome_unico,
-        "categoria": "massa",
-        "preco": 68.0,
-    })
+    client.post(
+        "/pratos",
+        json={
+            "nome": nome_unico,
+            "categoria": "massa",
+            "preco": 68.0,
+        },
+    )
     response = client.get("/pratos")
     nomes = [p["nome"] for p in response.json()]
     assert nome_unico in nomes
@@ -141,6 +145,7 @@ def test_prato_criado_aparece_na_listagem(client):
 # ===========================================================================
 # Bloco 4, Exercício 4.2 — Testes robustos vs frágeis (versão robusta)
 # ===========================================================================
+
 
 @pytest.mark.smoke
 def test_lista_retorna_pratos_com_estrutura_correta(client):
@@ -189,13 +194,17 @@ def test_filtro_categoria_retorna_apenas_categoria_correta(client):
 # Bloco 4, Exercício 4.3 — Parametrização
 # ===========================================================================
 
-@pytest.mark.parametrize("categoria_invalida", [
-    "esoterico",
-    "fastfood",
-    "japonesa",
-    "PIZZA",        # case-sensitive — não é igual a 'pizza'
-    "massa extra",  # espaço não permitido pelo pattern regex
-])
+
+@pytest.mark.parametrize(
+    "categoria_invalida",
+    [
+        "esoterico",
+        "fastfood",
+        "japonesa",
+        "PIZZA",  # case-sensitive — não é igual a 'pizza'
+        "massa extra",  # espaço não permitido pelo pattern regex
+    ],
+)
 def test_categoria_invalida_retorna_422(client, categoria_invalida):
     prato = {
         "nome": "Prato Teste",
@@ -213,11 +222,14 @@ def test_prato_inexistente_retorna_404(client, id_inexistente):
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize("categoria_valida", [
-    "pizza",
-    "massa",
-    "sobremesa",
-])
+@pytest.mark.parametrize(
+    "categoria_valida",
+    [
+        "pizza",
+        "massa",
+        "sobremesa",
+    ],
+)
 def test_filtro_categoria_valida(client, categoria_valida):
     """Verifica que o filtro funciona corretamente para cada categoria válida."""
     response = client.get(f"/pratos?categoria={categoria_valida}")

@@ -66,7 +66,7 @@ def test_criar_bebida_valida(client, bebida_valida):
 def test_criar_bebida_com_tipo_invalido_retorna_422(client):
     bebida_invalida = {
         "nome": "Energético XYZ",
-        "tipo": "energetico",   # não está no pattern
+        "tipo": "energetico",  # não está no pattern
         "preco": 12.0,
         "alcoolica": False,
         "volume_ml": 250,
@@ -91,13 +91,16 @@ def test_criar_bebida_com_volume_invalido_retorna_422(client):
 @pytest.mark.smoke
 def test_bebida_criada_aparece_na_listagem(client):
     nome_unico = "Prosecco Teste ABC-1234"
-    client.post("/bebidas", json={
-        "nome": nome_unico,
-        "tipo": "vinho",
-        "preco": 85.0,
-        "alcoolica": True,
-        "volume_ml": 750,
-    })
+    client.post(
+        "/bebidas",
+        json={
+            "nome": nome_unico,
+            "tipo": "vinho",
+            "preco": 85.0,
+            "alcoolica": True,
+            "volume_ml": 750,
+        },
+    )
     response = client.get("/bebidas")
     nomes = [b["nome"] for b in response.json()]
     assert nome_unico in nomes

@@ -95,14 +95,14 @@ def gerar_dataset(
     # Valor da transação: fraudes tendem a ser de alto valor
     valor_transacao = np.where(
         fraude,
-        rng.uniform(500, 10_000, n_samples),   # fraude: R$500 – R$10.000
-        rng.uniform(10, 800, n_samples),        # legítimo: R$10 – R$800
+        rng.uniform(500, 10_000, n_samples),  # fraude: R$500 – R$10.000
+        rng.uniform(10, 800, n_samples),  # legítimo: R$10 – R$800
     ).round(2)
 
     # Hora da transação: fraudes ocorrem mais de madrugada
     hora_transacao = np.where(
         fraude,
-        rng.integers(0, 6, n_samples),   # fraude: 0h–5h
+        rng.integers(0, 6, n_samples),  # fraude: 0h–5h
         rng.integers(7, 23, n_samples),  # legítimo: 7h–22h
     )
 
@@ -110,20 +110,18 @@ def gerar_dataset(
     distancia_ultima_compra = np.where(
         fraude,
         rng.uniform(100, 5_000, n_samples),  # fraude: 100–5000 km
-        rng.uniform(0, 50, n_samples),       # legítimo: 0–50 km
+        rng.uniform(0, 50, n_samples),  # legítimo: 0–50 km
     ).round(1)
 
     # Tentativas de senha: ataque de força bruta → muitas tentativas
     tentativas_senha = np.where(
         fraude,
         rng.integers(2, 10, n_samples),  # fraude: 2–9 tentativas
-        rng.integers(1, 2, n_samples),   # legítimo: quase sempre 1
+        rng.integers(1, 2, n_samples),  # legítimo: quase sempre 1
     )
 
     # País diferente do habitual: 40% das fraudes vs 5% dos legítimos
-    pais_diferente = (
-        rng.random(n_samples) < np.where(fraude, 0.40, 0.05)
-    ).astype(int)
+    pais_diferente = (rng.random(n_samples) < np.where(fraude, 0.40, 0.05)).astype(int)
 
     df = pd.DataFrame(
         {
@@ -158,7 +156,9 @@ if __name__ == "__main__":
         )
         df_ref = pd.DataFrame(X_ref, columns=[f"feature_{i}" for i in range(5)])
         df_ref["target"] = y_ref
-        print(f"\nclass_sep={sep} | Distribuição: {df_ref['target'].value_counts().to_dict()}")
+        print(
+            f"\nclass_sep={sep} | Distribuição: {df_ref['target'].value_counts().to_dict()}"
+        )
         # Observação: class_sep=0.5 → classes se misturam mais (problema mais difícil)
         #             class_sep=3.0 → classes muito separadas (problema muito fácil, inútil)
         #             A distribuição do target não muda; o que muda é a separabilidade das classes.
@@ -176,4 +176,6 @@ if __name__ == "__main__":
         print(f"ValueError capturado corretamente: {e}")
 
     df2, X2, y2 = gerar_dataset(n_samples=500, seed=0)
-    print(f"\nRetorno (df, X, y): df.shape={df2.shape}, X.shape={X2.shape}, y.shape={y2.shape}")
+    print(
+        f"\nRetorno (df, X, y): df.shape={df2.shape}, X.shape={X2.shape}, y.shape={y2.shape}"
+    )

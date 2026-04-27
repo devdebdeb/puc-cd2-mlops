@@ -55,10 +55,13 @@ class PredictInput(BaseModel):
     4. historico_cancelamentos   → equivalente a tentativas_senha (proxy de risco)
     5. distancia_entrega         → equivalente a distancia_ultima_compra
     """
+
     valor_pedido: float = Field(gt=0, description="Valor total do pedido em reais")
     hora_pedido: int = Field(ge=0, le=23, description="Hora do pedido (0–23)")
     num_itens: int = Field(ge=1, description="Quantidade de pratos no pedido")
-    historico_cancelamentos: int = Field(ge=0, description="Cancelamentos anteriores do cliente")
+    historico_cancelamentos: int = Field(
+        ge=0, description="Cancelamentos anteriores do cliente"
+    )
     distancia_entrega: float = Field(ge=0.0, description="Distância de entrega em km")
 
 
@@ -91,13 +94,17 @@ async def predict(data: PredictInput):
         )
 
     # Monta o array NA MESMA ORDEM que as features foram geradas no treino
-    features = np.array([[
-        data.valor_pedido,
-        data.hora_pedido,
-        data.distancia_entrega,      # distancia_ultima_compra no treino
-        data.num_itens,              # tentativas_senha no treino (proxy)
-        data.historico_cancelamentos,# pais_diferente no treino (proxy binário)
-    ]])
+    features = np.array(
+        [
+            [
+                data.valor_pedido,
+                data.hora_pedido,
+                data.distancia_entrega,  # distancia_ultima_compra no treino
+                data.num_itens,  # tentativas_senha no treino (proxy)
+                data.historico_cancelamentos,  # pais_diferente no treino (proxy binário)
+            ]
+        ]
+    )
 
     prediction = int(model.predict(features)[0])
     probability = float(model.predict_proba(features)[0][1])

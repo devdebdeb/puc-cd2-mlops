@@ -26,10 +26,11 @@ def treinar_e_avaliar(n_samples: int = 2000, seed: int = 42) -> RandomForestClas
     df, X, y = gerar_dataset(n_samples=n_samples, seed=seed)
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y,
+        X,
+        y,
         test_size=0.2,
         random_state=seed,
-        stratify=y,         # mantém proporção de classes no split
+        stratify=y,  # mantém proporção de classes no split
     )
 
     model = RandomForestClassifier(n_estimators=100, random_state=seed)
@@ -53,7 +54,9 @@ def treinar_e_avaliar(n_samples: int = 2000, seed: int = 42) -> RandomForestClas
 # ---------------------------------------------------------------------------
 # Exercício 2.2 — Serializar o artefato
 # ---------------------------------------------------------------------------
-def salvar_e_validar(model: RandomForestClassifier, X_test: np.ndarray, caminho: str = "model.pkl") -> None:
+def salvar_e_validar(
+    model: RandomForestClassifier, X_test: np.ndarray, caminho: str = "model.pkl"
+) -> None:
     """
     Ciclo completo: salvar → carregar → predizer → comparar.
     Garante que o artefato é autossuficiente e reproduzível.
@@ -64,12 +67,12 @@ def salvar_e_validar(model: RandomForestClassifier, X_test: np.ndarray, caminho:
     model_carregado = joblib.load(caminho)
 
     amostra = X_test[:5]
-    pred_original  = model.predict(amostra)
+    pred_original = model.predict(amostra)
     pred_carregado = model_carregado.predict(amostra)
 
-    assert np.array_equal(pred_original, pred_carregado), (
-        "❌ Predições divergem! O artefato não reproduziu corretamente."
-    )
+    assert np.array_equal(
+        pred_original, pred_carregado
+    ), "❌ Predições divergem! O artefato não reproduziu corretamente."
     print(f"✅ Artefato validado — predições idênticas: {pred_original}")
 
 

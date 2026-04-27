@@ -49,6 +49,7 @@ PAYLOAD_VALIDO = {
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture(scope="module")
 def modelo():
     """
@@ -57,6 +58,7 @@ def modelo():
     para não sobrecarregar o pipeline com downloads repetidos.
     """
     from model_utils import load_model
+
     return load_model(REPO_ID)
 
 
@@ -77,6 +79,7 @@ def client():
 # ---------------------------------------------------------------------------
 # Exercício 5.2 — Testes de estrutura do modelo carregado
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.integracao
 def test_modelo_carregado_nao_e_none(modelo):
@@ -105,14 +108,15 @@ def test_predict_retorna_array_com_formato_correto(modelo, amostra_valida):
 @pytest.mark.integracao
 def test_predict_proba_retorna_probabilidades_validas(modelo, amostra_valida):
     probas = modelo.predict_proba(amostra_valida)
-    assert probas.shape == (1, 2)               # duas classes
-    assert abs(probas[0].sum() - 1.0) < 1e-6   # soma = 1
+    assert probas.shape == (1, 2)  # duas classes
+    assert abs(probas[0].sum() - 1.0) < 1e-6  # soma = 1
     assert all(0 <= p <= 1 for p in probas[0])  # cada valor entre 0 e 1
 
 
 # ---------------------------------------------------------------------------
 # Exercício 5.3 — Testando o endpoint /ml/predict via TestClient
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.integracao
 def test_predict_retorna_200(client):
@@ -161,12 +165,15 @@ def test_predict_sem_campo_obrigatorio_retorna_422(client):
 
 
 @pytest.mark.integracao
-@pytest.mark.parametrize("campo,valor_invalido", [
-    ("hora_pedido", 25),       # hora fora de 0–23
-    ("hora_pedido", -1),       # hora negativa
-    ("num_itens", 0),          # quantidade inválida (ge=1)
-    ("valor_pedido", -50.0),   # valor negativo (gt=0)
-])
+@pytest.mark.parametrize(
+    "campo,valor_invalido",
+    [
+        ("hora_pedido", 25),  # hora fora de 0–23
+        ("hora_pedido", -1),  # hora negativa
+        ("num_itens", 0),  # quantidade inválida (ge=1)
+        ("valor_pedido", -50.0),  # valor negativo (gt=0)
+    ],
+)
 def test_predict_campo_invalido_retorna_422(client, campo, valor_invalido):
     payload = {**PAYLOAD_VALIDO, campo: valor_invalido}
     response = client.post("/ml/predict", json=payload)
@@ -176,6 +183,7 @@ def test_predict_campo_invalido_retorna_422(client, campo, valor_invalido):
 # ---------------------------------------------------------------------------
 # Exercício 5.5 (Desafio) — Testes de comportamento do modelo
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.integracao
 def test_modelo_distingue_casos_extremos(client):
@@ -205,13 +213,13 @@ def test_modelo_distingue_casos_extremos(client):
         "distancia_entrega": 4_500.0,
     }
 
-    resp_tipico   = client.post("/ml/predict", json=caso_tipico)
+    resp_tipico = client.post("/ml/predict", json=caso_tipico)
     resp_suspeito = client.post("/ml/predict", json=caso_suspeito)
 
     assert resp_tipico.status_code == 200
     assert resp_suspeito.status_code == 200
 
-    prob_tipico   = resp_tipico.json()["probability"]
+    prob_tipico = resp_tipico.json()["probability"]
     prob_suspeito = resp_suspeito.json()["probability"]
 
     assert prob_suspeito > prob_tipico, (
