@@ -1,0 +1,23 @@
+# e05 — docker-compose.yml da Bella Tavola
+# =========================================
+# Adaptado ao projeto real: um único serviço (a API FastAPI).
+# Diferente do exemplo do caderno, este projeto NÃO usa PostgreSQL nem Nginx —
+# o "banco" são listas em memória e o modelo vem do Hugging Face Hub.
+#
+# Uso local:
+#   export HF_TOKEN=hf_...           # (PowerShell: $env:HF_TOKEN = "hf_...")
+#   export HF_REPO_ID=SEU-USUARIO-HF/mlops-fraud-v2   # <- seu usuário do Hugging Face
+#   docker compose up --build
+#   curl http://localhost:8000/
+
+services:
+  api:
+    build: .
+    image: andrelivingstonmessina/bella-tavola:local   # usuário do Docker Hub
+    ports:
+      - "8000:8000"
+    environment:
+      # Lidos do shell/.env — necessários para a rota /ml/predict baixar o modelo.
+      HF_TOKEN: ${HF_TOKEN}
+      HF_REPO_ID: ${HF_REPO_ID}
+    restart: unless-stopped

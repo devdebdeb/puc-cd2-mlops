@@ -1,0 +1,35 @@
+# e05 — .dockerignore
+# Mantém fora da imagem tudo que não é necessário em produção.
+# Reduz o tamanho da imagem e evita vazar segredos (.env) para dentro dela.
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Ambientes virtuais (o venv da imagem é criado no build)
+.venv/
+env/
+venv/
+
+# Segredos — NUNCA devem entrar na imagem
+.env
+*.env
+
+# Artefatos de modelo (são baixados do Hugging Face Hub em runtime)
+*.pkl
+*.joblib
+
+# Testes (rodam no CI antes do build, não precisam na imagem)
+tests/
+pytest.ini
+
+# Controle de versão e IDEs
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
