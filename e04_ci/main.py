@@ -5,6 +5,7 @@ Reutiliza a API do e02 e adiciona o endpoint de predição do modelo.
 O modelo é carregado do Hugging Face Hub via model_utils.load_model.
 """
 
+import os
 from datetime import datetime
 from typing import Optional
 
@@ -216,6 +217,33 @@ async def root():
         "cidade": "São Paulo",
         "especialidade": "Massas artesanais",
     }
+
+
+@app.get("/health/db")
+async def health_db():
+    """
+    Verifica a conexão com o PostgreSQL (serviço 'db' do docker-compose).
+
+    Demonstra o conceito do e05_p02 (Exercício 11.2): a API alcança o banco
+    pelo NOME DO SERVIÇO na rede interna do Compose, via DATABASE_URL.
+    Sem DATABASE_URL (ex: nos testes) retorna 503 — não quebra a suíte.
+    """
+    database_url = os.environ.get("DATABASE_URL")
+    if not database_url:
+        raise HTTPException(status_code=503, detail="DATABASE_URL não configurada")
+    try:
+        import psycopg2
+
+        conn = psycopg2.connect(database_url, connect_timeout=3)
+        with conn.cursor() as cur:
+            cur.execute("SELECT version();")
+            versao = cur.fetchone()[0]
+        conn.close()
+        return {"status": "ok", "database": "postgresql", "versao": versao}
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503, detail=f"Falha ao conectar no banco: {exc}"
+        )
 
 
 @app.get("/pratos")

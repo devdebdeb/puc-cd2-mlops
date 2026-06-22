@@ -1,23 +1,59 @@
-# e05 — docker-compose.yml da Bella Tavola
-# =========================================
-# Adaptado ao projeto real: um único serviço (a API FastAPI).
-# Diferente do exemplo do caderno, este projeto NÃO usa PostgreSQL nem Nginx —
-# o "banco" são listas em memória e o modelo vem do Hugging Face Hub.
+# e05 — docker-compose.yml da Bella Tavola (stack completa)
+# =========================================================
+# Cobre os exercícios do e05_p02:
+#   11.1 — serviço 'api'
+#   11.2 (Essencial) — serviço 'db' (PostgreSQL) + rede interna do Compose
+#   11.3 (Recomendado) — serviço 'nginx' como proxy reverso (único ponto de entrada)
+#   11.4 (Desafio) — healthcheck do db + depends_on condition: service_healthy
 #
 # Uso local:
-#   export HF_TOKEN=hf_...           # (PowerShell: $env:HF_TOKEN = "hf_...")
-#   export HF_REPO_ID=SEU-USUARIO-HF/mlops-fraud-v2   # <- seu usuário do Hugging Face
+#   $env:HF_TOKEN = "hf_..."          # PowerShell
+#   $env:HF_REPO_ID = "andremessina/mlops-fraud-v2"
 #   docker compose up --build
-#   curl http://localhost:8000/
+#   curl http://localhost/            # entra pelo Nginx (porta 80)
+#   curl http://localhost/health/db   # API conecta no PostgreSQL
 
 services:
+  # ---- API FastAPI (não exposta direto ao host; só o Nginx entra) ----
   api:
     build: .
-    image: andrelivingstonmessina/bella-tavola:local   # usuário do Docker Hub
-    ports:
-      - "8000:8000"
+    image: andrelivingstonmessina/bella-tavola:local
     environment:
-      # Lidos do shell/.env — necessários para a rota /ml/predict baixar o modelo.
       HF_TOKEN: ${HF_TOKEN}
       HF_REPO_ID: ${HF_REPO_ID}
+      # Hostname 'db' = nome do serviço resolvido na rede interna do Compose
+      DATABASE_URL: postgresql://bella:secreta@db:5432/bellatavolada
+    depends_on:
+      db:
+        condition: service_healthy   # (11.4) só sobe após o banco estar pronto
     restart: unless-stopped
+
+  # ---- Banco de dados PostgreSQL (11.2) ----
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: bellatavolada
+      POSTGRES_USER: bella
+      POSTGRES_PASSWORD: secreta
+    volumes:
+      - bella-pg-data:/var/lib/postgresql/data   # dados persistem entre 'up/down'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bella -d bellatavolada"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # ---- Nginx como proxy reverso (11.3) ----
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"                       # único ponto de entrada público
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  bella-pg-data:
